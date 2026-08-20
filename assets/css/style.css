@@ -390,6 +390,10 @@ tr.ours td { font-weight: 650; color: var(--teal-2); }
   margin-bottom: 8px;
 }
 .audio-slot audio { width: 100%; }
+.audio-slot.enroll {
+  border-color: color-mix(in srgb, var(--copper) 45%, var(--rule));
+  background: #fff6ee;
+}
 .audio-slot.empty {
   border-style: dashed;
   display: flex;

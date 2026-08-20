@@ -256,33 +256,22 @@ function escapeReg(s) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-function probeAudio(src, slotEl) {
-  const audio = new Audio();
-  audio.preload = "metadata";
-  audio.controls = true;
-  const onOk = () => {
-    slotEl.classList.remove("empty");
-    slotEl.querySelector(".ph")?.remove();
-    if (!slotEl.querySelector("audio")) slotEl.appendChild(audio);
-  };
-  const onBad = () => {
-    slotEl.classList.add("empty");
-  };
-  audio.addEventListener("loadedmetadata", onOk, { once: true });
-  audio.addEventListener("error", onBad, { once: true });
-  audio.src = src;
-}
-
 function audioSlot(slot) {
   const label = slot.label[state.lang] || slot.label.en;
   const el = document.createElement("div");
-  el.className = "audio-slot empty";
+  el.className = "audio-slot" + (slot.role === "enrollment" ? " enroll" : "");
   el.innerHTML = `<label>${escapeHtml(label)}</label>
-    <div class="ph">
+    <audio controls preload="metadata" src="${escapeHtml(slot.src)}"></audio>
+    <div class="ph" hidden>
       <strong>${t("audio.pending")}</strong>
       <code>${escapeHtml(slot.src)}</code>
     </div>`;
-  probeAudio(slot.src, el);
+  const audio = el.querySelector("audio");
+  audio.addEventListener("error", () => {
+    el.classList.add("empty");
+    audio.remove();
+    el.querySelector(".ph")?.removeAttribute("hidden");
+  });
   return el;
 }
 
