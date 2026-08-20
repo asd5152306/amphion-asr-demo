@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AmphionASR — Personalized Context-Aware Speech Recognition</title>
+  <meta name="description" content="AmphionASR is a 1.7B SpeechLLM for hotword-conditioned, target-speaker, degradation-robust, and whispered-speech recognition.">
+  <link rel="icon" href="assets/img/mark.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@500;600&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="#top">
+        <img src="assets/img/mark.svg" alt="">
+        AmphionASR
+      </a>
+      <nav class="nav-links">
+        <a href="#overview" data-i18n="nav.overview">概述</a>
+        <a href="#architecture" data-i18n="nav.arch">架构</a>
+        <a href="#results" data-i18n="nav.results">结果</a>
+        <a class="keep" href="#listen" data-i18n="nav.listen">试听室</a>
+        <a href="#cite" data-i18n="nav.cite">引用</a>
+        <div class="lang-toggle" role="group" aria-label="Language">
+          <button type="button" data-lang="zh" class="active">中</button>
+          <button type="button" data-lang="en">EN</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero" id="top">
+    <div class="wrap">
+      <div class="kicker">Amphion Team · Tech Report 2026.07</div>
+      <h1>AmphionASR</h1>
+      <p class="lede" data-i18n="hero.lede">一个 1.7B SpeechLLM：在同一套参数里，用任务指令和可选参考输入，完成热词偏置、目标说话人抽取、退化环境与耳语识别。</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#listen" data-i18n="hero.listen">进入试听室</a>
+        <a class="btn btn-ghost" href="https://github.com/asd5152306/amphion-asr-demo" data-i18n="hero.github">GitHub</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>−55% / −37%</b><span data-i18n="stat.entity">GigaSpeechBench 实体误差（中 / 英，相对无热词）</span></div>
+        <div class="stat"><b>94%+</b><span data-i18n="stat.recall">CommonVoice 大词表 Recall@50</span></div>
+        <div class="stat"><b>13.02%</b><span data-i18n="stat.ts">目标说话人 in-house WER</span></div>
+        <div class="stat"><b>0.58% / 6.11%</b><span data-i18n="stat.whsp">耳语 wEar CER / WTIMIT WER</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="overview">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="index">01 — OVERVIEW</div>
+        <div>
+          <h2 data-i18n="ov.title">四种识别条件，一个模型</h2>
+          <p data-i18n="ov.p">通用转写只是实际 ASR 的一部分。AmphionASR 把热词列表和注册音频当作任务条件，把退化与耳语当作非典型声学输入，输出始终是「被请求的那一路语音」的转写。</p>
+        </div>
+      </div>
+      <div class="capabilities">
+        <a class="cap" href="#listen" data-scene="hotword">
+          <div class="n">01</div>
+          <h3 data-i18n="cap.hw.t">热词偏置</h3>
+          <p data-i18n="cap.hw.p">细粒度双编码器从约 1 万候选中检索 Top-50，注入 prompt。相对无热词，中英实体误差分别下降 55% 与 37%；在线检索中位额外时延约 1–3 ms。</p>
+        </a>
+        <a class="cap" href="#listen" data-scene="target_speaker">
+          <div class="n">02</div>
+          <h3 data-i18n="cap.ts.t">目标说话人</h3>
+          <p data-i18n="cap.ts.p">3–5 秒注册音频 + 混合语音。只转写被点名的说话人；目标不在场时应保持静默。In-house 正例 WER 13.02%，静音虚警 6.10%。</p>
+        </a>
+        <a class="cap" href="#listen" data-scene="degradation">
+          <div class="n">03</div>
+          <h3 data-i18n="cap.deg.t">退化稳健</h3>
+          <p data-i18n="cap.deg.p">远场、噪声、混响、染色、丢包及其叠加。Voice-in-the-Wild 16 个子集中，有 8 个取得对照系统里的最低 WER。</p>
+        </a>
+        <a class="cap" href="#listen" data-scene="whisper">
+          <div class="n">04</div>
+          <h3 data-i18n="cap.wh.t">耳语识别</h3>
+          <p data-i18n="cap.wh.p">低能量、非典型激励。中文 wEar CER 0.58%，英文 WTIMIT WER 6.11%，均为报告中的最低误差。</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="architecture">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="index">02 — MODEL</div>
+        <div>
+          <h2 data-i18n="arch.title">编码器、检索器、语言模型</h2>
+          <p data-i18n="arch.p">音频编码器把 16 kHz 波形映到 LLM 嵌入空间；文本支路携带指令与可选条件；检索支路在解码前从大词表抽出 Top-K 热词。初始化自 Qwen3-ASR-1.7B，检索适配器 2.6M，从零训练。</p>
+        </div>
+      </div>
+      <div class="arch-frame">
+        <img src="assets/img/architecture.svg" alt="AmphionASR architecture diagram">
+      </div>
+      <p class="arch-note" data-i18n="arch.note">三阶段 LoRA SFT：Stage 1 联合更新编码器与 LLM（退化 + 耳语）；Stage 2–3 冻结编码器，加入热词、目标说话人，并回放通用转写以防遗忘。随后对 LLM 做 GRPO，再单独训练检索适配器。</p>
+    </div>
+  </section>
+
+  <section id="results">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="index">03 — RESULTS</div>
+        <div>
+          <h2 data-i18n="res.title">报告中的关键数字</h2>
+          <p data-i18n="res.p">下面只摘录技术报告里最适合 Demo 讲清楚的对照。完整表格、协议边界与未覆盖的结论，以报告正文为准。</p>
+        </div>
+      </div>
+      <div class="metric-row">
+        <div class="panel">
+          <h3 data-i18n="res.entity">实体识别 · GigaSpeechBench AVG</h3>
+          <div class="bars" id="entity-bars"></div>
+          <p class="fine" data-i18n="res.entity.note">对照系统均为通用 ASR（无热词 prompt）。AmphionASR w/ RAG 使用每领域词表、K=50。该对比衡量的是「完整检索偏置流水线」，而不是在相同输入下的检索单独贡献。</p>
+        </div>
+        <div class="panel">
+          <h3 data-i18n="res.other">目标说话人 / 耳语</h3>
+          <table>
+            <thead>
+              <tr><th data-i18n="th.sys">系统</th><th class="num">TS WER</th><th class="num">FAsil</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Qwen3-ASR-1.7B</td><td class="num">78.99</td><td class="num">100.00</td></tr>
+              <tr><td>Qwen3-Omni-30B-A3B</td><td class="num">31.91</td><td class="num">9.15</td></tr>
+              <tr class="ours"><td>AmphionASR</td><td class="num">13.02</td><td class="num">6.10</td></tr>
+            </tbody>
+          </table>
+          <table style="margin-top:16px">
+            <thead>
+              <tr><th data-i18n="th.sys">系统</th><th class="num">wEar CER</th><th class="num">WTIMIT WER</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Whisper-large-v3</td><td class="num">16.33</td><td class="num">11.99</td></tr>
+              <tr><td>Qwen3-ASR-1.7B</td><td class="num">1.22</td><td class="num">9.56</td></tr>
+              <tr><td>FireRed-ASR2-LLM</td><td class="num">1.01</td><td class="num">15.18</td></tr>
+              <tr class="ours"><td>AmphionASR</td><td class="num">0.58</td><td class="num">6.11</td></tr>
+            </tbody>
+          </table>
+          <p class="fine" data-i18n="res.ts.note">TS-ASR 的 Qwen3-Omni 为零样本双音频指令；其余保留项目评测 prompt。耳语对照均贪婪解码，无 whisper 专用 prompt。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="listen">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="index">04 — LISTENING ROOM</div>
+        <div>
+          <h2 data-i18n="listen.title">24 条可讲清楚的样本</h2>
+          <p data-i18n="listen.p">中英各 12 条。音频稍后放入仓库即可自动出现播放器；转写、热词表和对照结果已经就位。目标说话人请先听注册音频，再听混合音频。</p>
+        </div>
+      </div>
+      <div class="room-toolbar" id="scene-tabs"></div>
+      <div class="room-toolbar" id="lang-chips"></div>
+      <div class="protocol" id="protocol"></div>
+      <div class="cases" id="cases">
+        <p class="fine" data-i18n="listen.loading">正在载入样本…</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cite" id="cite">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="index">05 — CITE</div>
+        <div>
+          <h2 data-i18n="cite.title">引用</h2>
+          <p data-i18n="cite.p">AmphionASR: Personalized Context-Aware Speech Recognition. Amphion Team, 2026.</p>
+        </div>
+      </div>
+      <pre id="bibtex">@techreport{amphionasr2026,
+  title   = {AmphionASR: Personalized Context-Aware Speech Recognition},
+  author  = {{Amphion Team}},
+  year    = {2026},
+  month   = {7},
+  note    = {Technical report}
+}</pre>
+      <button class="copy" type="button" id="copy-bib" data-i18n="cite.copy">复制 BibTeX</button>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <span data-i18n="foot.left">Amphion Team · 音频 case 可稍后补入 audio/ 目录</span>
+      <span><a href="https://github.com/asd5152306/amphion-asr-demo">github.com/asd5152306/amphion-asr-demo</a></span>
+    </div>
+  </footer>
+
+  <script src="assets/js/app.js" type="module"></script>
+</body>
+</html>
