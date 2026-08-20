@@ -257,7 +257,12 @@ function escapeReg(s) {
 }
 
 function audioSlot(slot) {
-  const label = slot.label[state.lang] || slot.label.en;
+  const label =
+    slot.role === "enrollment"
+      ? state.lang === "zh"
+        ? "注册音频 · 请先听"
+        : "Enrollment · listen first"
+      : slot.label[state.lang] || slot.label.en;
   const el = document.createElement("div");
   el.className = "audio-slot" + (slot.role === "enrollment" ? " enroll" : "");
   el.innerHTML = `<label>${escapeHtml(label)}</label>
