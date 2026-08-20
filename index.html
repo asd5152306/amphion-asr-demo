@@ -59,6 +59,10 @@
           <p data-i18n="ov.p">通用转写只是实际 ASR 的一部分。AmphionASR 把热词列表和注册音频当作任务条件，把退化与耳语当作非典型声学输入，输出始终是「被请求的那一路语音」的转写。</p>
         </div>
       </div>
+      <figure class="paper-fig">
+        <img src="assets/img/figure1-capabilities.jpg" alt="Figure 1. Four recognition capabilities of AmphionASR.">
+        <figcaption data-i18n="fig1.cap">图 1：AmphionASR 的四种识别能力。左上为热词偏置，右上为目标说话人，左下为退化稳健，右下为耳语识别。</figcaption>
+      </figure>
       <div class="capabilities">
         <a class="cap" href="#listen" data-scene="hotword">
           <div class="n">01</div>
@@ -93,9 +97,10 @@
           <p data-i18n="arch.p">音频编码器把 16 kHz 波形映到 LLM 嵌入空间；文本支路携带指令与可选条件；检索支路在解码前从大词表抽出 Top-K 热词。初始化自 Qwen3-ASR-1.7B，检索适配器 2.6M，从零训练。</p>
         </div>
       </div>
-      <div class="arch-frame">
-        <img src="assets/img/architecture.svg" alt="AmphionASR architecture diagram">
-      </div>
+      <figure class="paper-fig">
+        <img src="assets/img/figure2-architecture.png" alt="Figure 2. AmphionASR architecture.">
+        <figcaption data-i18n="fig2.cap">图 2：AmphionASR 架构。音频编码器把波形映到 LLM 嵌入空间；可选注册音频走同一编码器；检索支路在解码前插入 Top-K 热词。虚线为推理时可选路径。</figcaption>
+      </figure>
       <p class="arch-note" data-i18n="arch.note">三阶段 LoRA SFT：Stage 1 联合更新编码器与 LLM（退化 + 耳语）；Stage 2–3 冻结编码器，加入热词、目标说话人，并回放通用转写以防遗忘。随后对 LLM 做 GRPO，再单独训练检索适配器。</p>
     </div>
   </section>
