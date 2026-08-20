@@ -10,12 +10,9 @@ GitHub Pages 站点：[https://asd5152306.github.io/amphion-asr-demo/](https://a
 - 架构示意、GigaSpeechBench / TS-ASR / 耳语关键数字
 - 24 条 case：热词 6、目标说话人 6、退化环境 6、耳语 6
 - 转写对照、热词 Top-50、协议说明
+- 24 条 case 的输入音频（目标说话人含注册音频 + 混合音频）
 
-音频文件**先留空**。把文件按下面路径放进仓库后，刷新页面即可出现播放器，不用改 HTML。
-
-## 补音频
-
-目录约定见 [audio/README.md](audio/README.md)。热词用 `audio.mp3`，退化 / 耳语用 `audio.wav`，目标说话人需要 `enrollment.*` 与 `mixture.wav`。
+音频目录约定见 [audio/README.md](audio/README.md)。
 
 ## 本地预览
 

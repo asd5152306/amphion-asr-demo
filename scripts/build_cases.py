@@ -290,7 +290,7 @@ CASES = [
         "duration_sec": 3.945,
         "source_id": "tsasr_libri2mix_test_672-122797-0019_2830-3980-0001_s2_sup",
         "audio_slots": [
-            {"role": "enrollment", "src": ts_enroll("TS-EN-1", "flac"), "label": {"zh": "注册音频 5.0s", "en": "Enrollment 5.0s"}},
+            {"role": "enrollment", "src": ts_enroll("TS-EN-1", "wav"), "label": {"zh": "注册音频 5.0s", "en": "Enrollment 5.0s"}},
             {"role": "mixture", "src": ts_mix("TS-EN-1"), "label": {"zh": "混合音频 3.9s", "en": "Mixture 3.9s"}},
         ],
         "speakers": {
@@ -333,7 +333,7 @@ CASES = [
         "duration_sec": 3.260,
         "source_id": "tsasr_libri2mix_test_672-122797-0005_260-123440-0018_s2_sup",
         "audio_slots": [
-            {"role": "enrollment", "src": ts_enroll("TS-EN-2", "flac"), "label": {"zh": "注册音频 7.4s", "en": "Enrollment 7.4s"}},
+            {"role": "enrollment", "src": ts_enroll("TS-EN-2", "wav"), "label": {"zh": "注册音频 7.4s", "en": "Enrollment 7.4s"}},
             {"role": "mixture", "src": ts_mix("TS-EN-2"), "label": {"zh": "混合音频 3.3s", "en": "Mixture 3.3s"}},
         ],
         "speakers": {

@@ -22,9 +22,9 @@ audio/01_hotword/HW-LIMIT-EN-1/audio.mp3
 每个 case 两个文件。请先听 enrollment，再听 mixture。
 
 ```
-audio/02_target_speaker/TS-EN-1/enrollment.flac
+audio/02_target_speaker/TS-EN-1/enrollment.wav
 audio/02_target_speaker/TS-EN-1/mixture.wav
-audio/02_target_speaker/TS-EN-2/enrollment.flac
+audio/02_target_speaker/TS-EN-2/enrollment.wav
 audio/02_target_speaker/TS-EN-2/mixture.wav
 audio/02_target_speaker/TS-ZH-1/enrollment.wav
 audio/02_target_speaker/TS-ZH-1/mixture.wav

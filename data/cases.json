@@ -5,10 +5,10 @@
     "title": "Personalized Context-Aware Speech Recognition",
     "team": "Amphion Team",
     "date": "2026-07-28",
-    "audio_status": "placeholder",
+    "audio_status": "ready",
     "audio_note": {
-      "zh": "音频文件稍后放入对应目录即可自动显示播放器，无需改页面代码。",
-      "en": "Drop audio files into the matching folders later; players appear automatically."
+      "zh": "试听室音频已放入对应目录。",
+      "en": "Listening-room audio files are included."
     },
     "case_count": 24
   },
@@ -784,7 +784,7 @@
       "audio_slots": [
         {
           "role": "enrollment",
-          "src": "audio/02_target_speaker/TS-EN-1/enrollment.flac",
+          "src": "audio/02_target_speaker/TS-EN-1/enrollment.wav",
           "label": {
             "zh": "注册音频 5.0s",
             "en": "Enrollment 5.0s"
@@ -853,7 +853,7 @@
       "audio_slots": [
         {
           "role": "enrollment",
-          "src": "audio/02_target_speaker/TS-EN-2/enrollment.flac",
+          "src": "audio/02_target_speaker/TS-EN-2/enrollment.wav",
           "label": {
             "zh": "注册音频 7.4s",
             "en": "Enrollment 7.4s"
